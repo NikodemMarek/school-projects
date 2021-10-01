@@ -117,7 +117,6 @@ function placeShip(board, size) {
 function canPlaceShip(board, positons) {
     return positons.every(position => {
         return isOnBoard(board, position) &&
-            !isShip(board, position) &&
             isNotShip(board, { x: position.x - 1, y: position.y - 1 }) &&
             isNotShip(board, { x: position.x - 1, y: position.y }) &&
             isNotShip(board, { x: position.x - 1, y: position.y + 1 }) &&
@@ -130,14 +129,6 @@ function canPlaceShip(board, positons) {
     })
 }
 
-/**
- * Check if any position is occupied by a ship.
- *
- * @param {Array.<Array.<number>>} board - table representing a board
- * @param {Array.<Position>} positions - positions on the board
- * @return {boolean} is there any ship in given positions
- */
-function isAnyShip(board, positions) { return positions.some(position => isShip(board, position)) }
 /**
  * Check if the given position on board is occupied by a ship.
  *
