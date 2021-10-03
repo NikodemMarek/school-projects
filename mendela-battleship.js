@@ -29,11 +29,11 @@ function drawBoard(ctx, board, size, shipColor, emptyColor) {
         drawElement(ctx, { x: x, y: y }, size, (field == 1? shipColor: emptyColor))))
 }
 /**
- * Draw a ship to a context in a provided position.
+ * Draw board element to a context in a provided position.
  *
  * @param {Context} ctx - a context to draw on
- * @param {Position} position - position of the ship
- * @param {Position} size - length of edges of the ship
+ * @param {Position} position - position of the element
+ * @param {Position} size - length of edges of the element
  */
 function drawElement(ctx, position, size, color) {
     ctx.fillStyle = color
