@@ -54,21 +54,13 @@ function placeShips(dimensions, ships) {
     // Create a array of provided size x, and fill it with arrays of provided size y, to create board.
     const board = Array(dimensions.x)
     for(let i = 0; i < board.length; i ++) board[i] = Array(dimensions.y).fill(0)
-    
-    let ship = undefined
-    while((ship = ships.pop()) != undefined) {
-        for(let i = 0; i < ship.quantity; i ++) {
-            const shipPositions = placeShip(board, ship.size)
+
+    for(let i = 0; i < ships.length; i++) {
+        for(let j = 0; j < ships[i].quantity; j ++) {
+            const shipPositions = placeShip(board, ships[i].size)
             shipPositions.forEach(shipPosition => board[shipPosition.x][shipPosition.y] = 1)
         }
     }
-
-    Object.keys(ships).forEach(key => {
-        for(let i = 0; i < Array(ships[key]).length; i ++) {
-            const shipPositions = placeShip(board, key)
-            shipPositions.forEach(shipPosition => board[shipPosition.x][shipPosition.y] = 1)
-        }
-    })
 
     return board
 }
