@@ -8,15 +8,19 @@
         <title>mendela-battleship</title>
 
         <style>
-            .canvas {
+            .board {
                 background-color: black;
+                position: relative;
+                height: 500px;
+                width: 500px;
+                border: black 1px solid;
             }
         </style>
     </head>
 
     <body>
-       <canvas class="canvas" height="500" width="500"></canvas> 
-
-       <script src="mendela-battleship.js" defer></script>
+        <div class="board"></div>
+    
+        <script src="mendela-battleship.js" defer></script>
     </body>
 </html>

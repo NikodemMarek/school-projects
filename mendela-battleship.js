@@ -8,39 +8,34 @@
  */
 
 /**
- * Clear the provided context.
+ * Show a board.
  *
- * @param {Context} ctx - a context to clear
- * @param {Position} contextSize - size of the given context
- */
-function clear(ctx, contextSize) { ctx.clearRect(0, 0, contextSize.x, contextSize.y) }
-
-/**
- * Draw a board.
- *
- * @param {Context} ctx - a context to draw on
+ * @param {Element} container - a container for board
  * @param {Array.<Array.<number>>} board - table representing a board
  * @param {Position} size - length of edges of the ship
  * @param {string} shipColor - color of the ships
  * @param {string} emptyColor - color of the empty elements
  */
-function drawBoard(ctx, board, size, shipColor, emptyColor) {
-    board.forEach((column, y) => column.forEach((field, x) =>
-        drawElement(ctx, { x: x, y: y }, size, (field == 1? shipColor: emptyColor))))
+function drawBoard(container, board, size, shipColor, emptyColor) {
+    board.forEach((column, y) => column.forEach((field, x) => drawElement(container, { x: x, y: y }, size, (field == 1 ? shipColor : emptyColor))))
 }
 /**
- * Draw board element to a context in a provided position.
+ * Show board element in container in a provided position.
  *
- * @param {Context} ctx - a context to draw on
+ * @param {Element} container - a container for board
  * @param {Position} position - position of the element
  * @param {Position} size - length of edges of the element
  */
-function drawElement(ctx, position, size, color) {
-    ctx.fillStyle = color
-    ctx.fillRect(
-        position.x * size.x + 1, position.y * size.y + 1,
-        size.x - 2, size.y - 2
-    )
+function drawElement(container, position, size, color) {
+    const element = document.createElement('div')
+    element.style.position = 'absolute'
+    element.style.top = position.x * size.x + 1 + 'px'
+    element.style.left = position.y * size.y + 1 + 'px'
+    element.style.height = size.x - 2 + 'px'
+    element.style.width = size.y - 2 + 'px'
+    element.style.backgroundColor = color
+
+    container.appendChild(element)
 }
 
 /**
@@ -151,10 +146,6 @@ function isOnBoard(board, position) {
 
 // Initialize generator.
 function init() {
-    // Get context from html canvas.
-    const canvas = document.getElementsByClassName('canvas')[0]
-    const ctx = canvas.getContext('2d')
-
     /**
      * Size of the context (absoulte).
      * 
@@ -202,7 +193,10 @@ function init() {
     // Generate a board with provided ships.
     const board = placeShips(boardDimensions, ships)
 
-    drawBoard(ctx, board, elementSize, shipColor, emptyColor)
+    // Container for board.
+    const availableShipsContainer = document.getElementsByClassName('board')[0]
+
+    drawBoard(availableShipsContainer, board, elementSize, shipColor, emptyColor)
 }
 
 init()
