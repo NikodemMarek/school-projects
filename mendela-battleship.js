@@ -12,27 +12,34 @@
  *
  * @param {Element} container - a container for board
  * @param {Array.<Array.<number>>} board - table representing a board
+ * @param {Position} space - spacing around elements
  * @param {Position} size - length of edges of the ship
  * @param {string} shipColor - color of the ships
  * @param {string} emptyColor - color of the empty elements
  */
-function drawBoard(container, board, size, shipColor, emptyColor) {
-    board.forEach((column, y) => column.forEach((field, x) => drawElement(container, { x: x, y: y }, size, (field == 1 ? shipColor : emptyColor))))
+function drawBoard(container, board, space, size, shipColor, emptyColor) {
+    container.style.borderTop = space.x + 'px solid'
+    container.style.borderBottom = space.x + 'px solid'
+    container.style.borderLeft = space.y + 'px solid'
+    container.style.borderRight = space.y + 'px solid'
+    board.forEach((column, y) => column.forEach((field, x) => drawElement(container, { x: x, y: y }, space, size, (field == 1 ? shipColor : emptyColor))))
 }
 /**
  * Show board element in container in a provided position.
  *
  * @param {Element} container - a container for board
  * @param {Position} position - position of the element
+ * @param {Position} space - spacing around elements
  * @param {Position} size - length of edges of the element
+ * @param {string} color - color of the element
  */
-function drawElement(container, position, size, color) {
+function drawElement(container, position, space, size, color) {
     const element = document.createElement('div')
     element.style.position = 'absolute'
-    element.style.top = position.x * size.x + 1 + 'px'
-    element.style.left = position.y * size.y + 1 + 'px'
-    element.style.height = size.x - 2 + 'px'
-    element.style.width = size.y - 2 + 'px'
+    element.style.top = position.x * size.x + space.x + 'px'
+    element.style.left = position.y * size.y + space.y + 'px'
+    element.style.height = size.x - space.x * 2 + 'px'
+    element.style.width = size.y - space.y * 2 + 'px'
     element.style.backgroundColor = color
 
     container.appendChild(element)
@@ -158,13 +165,19 @@ function init() {
      * @const {Position}
      */
     const boardDimensions = { x: 10, y: 10 }
-
     /**
      * Size of ships (absoulte).
      * 
      * @const {Position}
      */
     const elementSize = { x: contextSize.x / boardDimensions.x, y: contextSize.y / boardDimensions.y }
+    /**
+     * Spacing between elements on board.
+     * 
+     * @const {Position}
+     */
+    const space = { x: 1, y: 1 }
+
     /**
      * Color of ships.
      * 
@@ -196,7 +209,7 @@ function init() {
     // Container for board.
     const availableShipsContainer = document.getElementsByClassName('board')[0]
 
-    drawBoard(availableShipsContainer, board, elementSize, shipColor, emptyColor)
+    drawBoard(availableShipsContainer, board, space, elementSize, shipColor, emptyColor)
 }
 
 init()
