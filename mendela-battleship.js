@@ -154,11 +154,11 @@ function isOnBoard(board, position) {
 // Initialize generator.
 function init() {
     /**
-     * Size of the context (absoulte).
+     * Size of the container (absoulte).
      * 
      * @const {Position}
      */
-    const contextSize = { x: 500, y: 500 }
+    const containerSize = { x: 500, y: 500 }
     /**
      * Size of the board (relative).
      * 
@@ -170,7 +170,7 @@ function init() {
      * 
      * @const {Position}
      */
-    const elementSize = { x: contextSize.x / boardDimensions.x, y: contextSize.y / boardDimensions.y }
+    const elementSize = { x: containerSize.x / boardDimensions.x, y: containerSize.y / boardDimensions.y }
     /**
      * Spacing between elements on board.
      * 
