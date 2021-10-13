@@ -195,7 +195,7 @@ function showAvailableShips(container, ships, space, size, shipColor, background
             shipContainer.addEventListener('mouseenter', () => { if(selectedShip != shipContainer.id) [ ... shipContainer.children ].forEach(child => child.style.backgroundColor = shipColor.hover) })
             shipContainer.addEventListener('mouseleave', () => { if(selectedShip != shipContainer.id) [ ... shipContainer.children ].forEach(child => child.style.backgroundColor = shipColor.notPlaced) })
             shipContainer.addEventListener('click', () => {
-                [ ... document.getElementById(selectedShip).children ].forEach(child => child.style.backgroundColor = shipColor.notPlaced);
+                if(selectedShipSize < 0) [ ... document.getElementById(selectedShip).children ].forEach(child => child.style.backgroundColor = shipColor.notPlaced);
                 [ ... shipContainer.children ].forEach(child => child.style.backgroundColor = shipColor.placed)
 
                 selectedShip = shipContainer.id;
@@ -213,42 +213,45 @@ function showAvailableShips(container, ships, space, size, shipColor, background
 }
 
 function placeShipPreview(container, board, dimensions, event, space, size, color, backgroundColor) {
-    const off = container.getBoundingClientRect()
-
     const ship = selectedShipDirection? Array(selectedShipSize).fill([ 1 ]): [ Array(selectedShipSize).fill(1) ]
 
-    let left = Math.floor((event.clientX - off.x) / size.x)
-    let top = Math.floor((event.clientY - off.y) / size.y)
-
-    const placePositions = Array(selectedShipSize)
+    const position = previewPosition(dimensions, event, size, container.getBoundingClientRect())
 
     const shipContainer = document.createElement('div')
     shipContainer.style.position = 'relative'
+    shipContainer.style.left = position.x * size.x - space.y + 'px'
+    shipContainer.style.top = position.y * size.y - space.x + 'px'
     if(selectedShipDirection) {
-        left = selectedShipSize + left < dimensions.x? left: dimensions.x - selectedShipSize
-        top = top < dimensions.y? top: dimensions.y - 1
-
-        shipContainer.style.left = left * size.x - space.y + 'px'
-        shipContainer.style.top = top * size.y - space.x + 'px'
         shipContainer.style.height = size.x + 'px'
         shipContainer.style.width = selectedShipSize * size.y + 'px'
     }
     else {
-        left = left < dimensions.x? left: dimensions.x - 1
-        top = selectedShipSize + top < dimensions.y? top: dimensions.y - selectedShipSize
-
-        shipContainer.style.left = left * size.x - space.y + 'px'
-        shipContainer.style.top = top * size.y - space.x + 'px'
         shipContainer.style.height = selectedShipSize * size.x + 'px'
         shipContainer.style.width = size.y + 'px'
     }
     shipContainer.style.backgroundColor = backgroundColor
 
-    for(let i = 0; i < selectedShipSize; i ++) placePositions[i] = selectedShipDirection? { x: left + i, y: top }: { x: left, y: top + i }
+    const placePositions = Array(selectedShipSize)
+    for(let i = 0; i < selectedShipSize; i ++) placePositions[i] = selectedShipDirection? { x: position.x + i, y: position.y }: { x: position.x, y: position.y + i }
 
     drawBoard(shipContainer, ship, space, size, canPlaceShip(board, placePositions)? color.canPlace: color.cantPlace, 'white')
 
     container.appendChild(shipContainer)
+}
+function previewPosition(dimensions, event, size, off) {
+    let left = Math.floor((event.clientX - off.x) / size.x)
+    let top = Math.floor((event.clientY - off.y) / size.y)
+
+    if(selectedShipDirection) {
+        left = selectedShipSize + left < dimensions.x? left: dimensions.x - selectedShipSize
+        top = top < dimensions.y? top: dimensions.y - 1
+    }
+    else {
+        left = left < dimensions.x? left: dimensions.x - 1
+        top = selectedShipSize + top < dimensions.y? top: dimensions.y - selectedShipSize
+    }
+
+    return { x: left, y: top }
 }
 
 /**
@@ -308,9 +311,9 @@ const ships = [
 ]
 
 // Selected ship from available ships
-let selectedShip = 0;
-let selectedShipSize = ships[0].size;
-let selectedShipDirection = true; // True - horizontal, false - vertical.
+let selectedShip = -1
+let selectedShipSize = 0
+let selectedShipDirection = true // True - horizontal, false - vertical.
 
 // Container for board.
 const boardContainer = document.getElementsByClassName('board')[0]
@@ -326,7 +329,9 @@ function init() {
     const board = Array(boardDimensions.x)
     for(let i = 0; i < board.length; i ++) board[i] = Array(boardDimensions.y).fill(0)
 
-    showAvailableShips(availableShipsContainer, ships, space, elementSize, shipColor, 'black')
+    let shipsToPlace = JSON.parse(JSON.stringify(ships))
+
+    showAvailableShips(availableShipsContainer, shipsToPlace, space, elementSize, shipColor, 'black')
     drawBoard(boardContainer, board, space, elementSize, shipColor.placed, emptyColor)
 
     boardContainer.addEventListener('mousemove', event => {
@@ -339,6 +344,25 @@ function init() {
         drawBoard(boardContainer, board, space, elementSize, shipColor.placed, emptyColor)
         placeShipPreview(boardContainer, board, boardDimensions, event, space, elementSize, shipColor, 'black')
     }, false)
+    boardContainer.addEventListener('click', event => {
+        showAvailableShips(availableShipsContainer, shipsToPlace, space, elementSize, shipColor, 'black')
+        
+        const position = previewPosition(boardDimensions, event, elementSize, boardContainer.getBoundingClientRect())
+        const placePositions = Array(selectedShipSize)
+        for(let i = 0; i < selectedShipSize; i ++) placePositions[i] = selectedShipDirection? { x: position.x + i, y: position.y }: { x: position.x, y: position.y + i }
+
+        if(canPlaceShip(board, placePositions)) {
+            placePositions.forEach(pos => board[pos.x][pos.y] = 1)
+            if(selectedShipSize > 0) shipsToPlace.find(ship => ship.size === selectedShipSize).quantity --
+            shipsToPlace = shipsToPlace.filter((ship, index, arr) => ship.quantity > 0)
+            selectedShipSize = 0
+            selectedShip = -1
+
+            showAvailableShips(availableShipsContainer, shipsToPlace, space, elementSize, shipColor, 'black')
+            drawBoard(boardContainer, board, space, elementSize, shipColor.placed, emptyColor)
+            placeShipPreview(boardContainer, board, boardDimensions, event, space, elementSize, shipColor, 'black')
+        }
+    })
 }
 
 init()
