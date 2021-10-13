@@ -323,11 +323,6 @@ function init() {
         drawBoard(boardContainer, board, space, elementSize, shipColor.placed, emptyColor)
         placeShipPreview(boardContainer, boardDimensions, event, space, elementSize, shipColor, 'black')
     })
-    boardContainer.addEventListener('mousemove', event => {
-        drawBoard(boardContainer, board, space, elementSize, shipColor.placed, emptyColor)
-        placeShipPreview(boardContainer, boardDimensions, event, space, elementSize, shipColor, 'black')
-    })
-
     boardContainer.addEventListener('contextmenu', event => {
         event.preventDefault()
         selectedShipDirection = !selectedShipDirection
