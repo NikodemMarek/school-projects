@@ -327,6 +327,13 @@ function init() {
         drawBoard(boardContainer, board, space, elementSize, shipColor.placed, emptyColor)
         placeShipPreview(boardContainer, boardDimensions, event, space, elementSize, shipColor, 'black')
     })
+
+    boardContainer.addEventListener('contextmenu', event => {
+        event.preventDefault()
+        selectedShipDirection = !selectedShipDirection
+        drawBoard(boardContainer, board, space, elementSize, shipColor.placed, emptyColor)
+        placeShipPreview(boardContainer, boardDimensions, event, space, elementSize, shipColor, 'black')
+    }, false)
 }
 
 init()
