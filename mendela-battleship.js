@@ -194,13 +194,14 @@ function showAvailableShips(container, ships, space, size, shipColor, background
             shipContainer.addEventListener('mouseenter', () => { if(selectedShip != shipContainer.id) [ ... shipContainer.children ].forEach(child => child.style.backgroundColor = shipColor.hover) })
             shipContainer.addEventListener('mouseleave', () => { if(selectedShip != shipContainer.id) [ ... shipContainer.children ].forEach(child => child.style.backgroundColor = shipColor.notPlaced) })
             shipContainer.addEventListener('click', () => {
-                if(selectedShip >= 0) [ ... document.getElementById(selectedShip).children ].forEach(child => child.style.backgroundColor = shipColor.notPlaced);
+                [ ... document.getElementById(selectedShip).children ].forEach(child => child.style.backgroundColor = shipColor.notPlaced);
                 [ ... shipContainer.children ].forEach(child => child.style.backgroundColor = shipColor.placed)
 
                 selectedShip = shipContainer.id;
             })
 
             drawBoard(shipContainer, board, space, size, shipColor.notPlaced, 'white')
+            if(selectedShip == shipContainer.id) [ ... shipContainer.children ].forEach(child => child.style.backgroundColor = shipColor.placed);
 
             container.appendChild(shipContainer)
 
@@ -210,7 +211,7 @@ function showAvailableShips(container, ships, space, size, shipColor, background
 }
 
 // Selected ship from available ships
-let selectedShip = -1;
+let selectedShip = 0;
 
 // Initialize generator.
 function init() {
