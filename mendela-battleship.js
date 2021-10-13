@@ -151,6 +151,40 @@ function isOnBoard(board, position) {
         position.x < board.length && position.y < board[0].length
 }
 
+/**
+ * Show available ships in a container.
+ * 
+ * @param {Element} container - the container for ships
+ * @param {Array.<{ size: number, quantity: number }>} ships - available ships
+ * @param {Position} space - spacing around elements
+ * @param {Position} size - length of edges of the ship
+ * @param {string} shipColor - color for a ship
+ * @param {string} backgroundColor - background color behind ship
+ */
+function showAvailableShips(container, ships, space, size, shipColor, backgroundColor) {
+    let shipNumber = 0
+
+    ships.forEach(ship => {
+        for(let i = 0; i < ship.quantity; i ++) {
+            const board = Array(ship.size).fill([ 1 ])
+
+            const shipContainer = document.createElement('div')
+            shipContainer.style.position = 'relative'
+            shipContainer.style.top = shipNumber * size.x + space.x + 'px'
+            shipContainer.style.height = size.x + 'px'
+            shipContainer.style.width = ship.size * size.y + 'px'
+            shipContainer.style.backgroundColor = backgroundColor
+            shipContainer.style.marginBottom = `-${ size.x - 15 }px`
+
+            drawBoard(shipContainer, board, space, size, shipColor, 'white')
+
+            container.appendChild(shipContainer)
+
+            shipNumber ++
+        }
+    })
+}
+
 // Initialize generator.
 function init() {
     /**
@@ -197,19 +231,22 @@ function init() {
      * @type {Array.<{ size: number, quantity: number }>}
      */
     const ships = [
-        { size: 1, quantity: 4},
-        { size: 2, quantity: 3},
-        { size: 3, quantity: 2},
-        { size: 4, quantity: 1}
+        { size: 4, quantity: 1 },
+        { size: 3, quantity: 2 },
+        { size: 3, quantity: 3 },
+        { size: 1, quantity: 4 }
     ]
 
     // Generate a board with provided ships.
     const board = placeShips(boardDimensions, ships)
 
     // Container for board.
-    const availableShipsContainer = document.getElementsByClassName('board')[0]
+    const boardContainer = document.getElementsByClassName('board')[0]
 
-    drawBoard(availableShipsContainer, board, space, elementSize, shipColor, emptyColor)
+    drawBoard(boardContainer, board, space, elementSize, shipColor, emptyColor)
+
+    const availableShipsContainer = document.getElementsByClassName('availableShips')[0]
+    showAvailableShips(availableShipsContainer, ships, space, elementSize, shipColor, 'black')
 }
 
 init()

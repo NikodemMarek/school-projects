@@ -8,7 +8,17 @@
         <title>mendela-battleship</title>
 
         <style>
+            .container {
+                position: relative;
+            }
+
+            .availableShips {
+                float: left;
+                position: relative;
+                width: 300px;
+            }
             .board {
+                float: left;
                 background-color: black;
                 position: relative;
                 height: 500px;
@@ -18,7 +28,11 @@
     </head>
 
     <body>
-        <div class="board"></div>
+        <div class="container">
+            <div class="availableShips"></div>
+
+            <div class="board"></div>
+        </div>
     
         <script src="mendela-battleship.js" defer></script>
     </body>
