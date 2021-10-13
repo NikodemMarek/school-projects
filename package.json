@@ -1,0 +1,22 @@
+{
+  "name": "school-projects",
+  "version": "1.0.0",
+  "description": "",
+  "main": "mendela-battleship.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NikodemMarek/school-projects.git"
+  },
+  "author": "Nikodem Marek",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/NikodemMarek/school-projects/issues"
+  },
+  "homepage": "https://github.com/NikodemMarek/school-projects#readme",
+  "devDependencies": {
+    "eslint": "^8.0.0"
+  }
+}
