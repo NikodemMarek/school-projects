@@ -173,6 +173,8 @@ function isOnBoard(board, position) {
  * @param {string} backgroundColor - background color behind ship
  */
 function showAvailableShips(container, ships, space, size, shipColor, backgroundColor) {
+    container.innerHTML = ''
+
     let shipNumber = 0
 
     ships.forEach(ship => {
@@ -181,17 +183,22 @@ function showAvailableShips(container, ships, space, size, shipColor, background
 
             const shipContainer = document.createElement('div')
 
+            shipContainer.id = shipNumber
             shipContainer.style.position = 'relative'
             shipContainer.style.top = shipNumber * size.x + space.x + 'px'
             shipContainer.style.height = size.x + 'px'
             shipContainer.style.width = ship.size * size.y + 'px'
             shipContainer.style.backgroundColor = backgroundColor
             shipContainer.style.marginBottom = `-${ size.x - 15 }px`
-            console.log(shipContainer.children);
 
-            shipContainer.addEventListener('mouseenter', () => [ ... shipContainer.children ].forEach(child => child.style.backgroundColor = shipColor.hover))
-            shipContainer.addEventListener('mouseleave', () => [ ... shipContainer.children ].forEach(child => child.style.backgroundColor = shipColor.notPlaced))
+            shipContainer.addEventListener('mouseenter', () => { if(selectedShip != shipContainer.id) [ ... shipContainer.children ].forEach(child => child.style.backgroundColor = shipColor.hover) })
+            shipContainer.addEventListener('mouseleave', () => { if(selectedShip != shipContainer.id) [ ... shipContainer.children ].forEach(child => child.style.backgroundColor = shipColor.notPlaced) })
+            shipContainer.addEventListener('click', () => {
+                if(selectedShip >= 0) [ ... document.getElementById(selectedShip).children ].forEach(child => child.style.backgroundColor = shipColor.notPlaced);
+                [ ... shipContainer.children ].forEach(child => child.style.backgroundColor = shipColor.placed)
 
+                selectedShip = shipContainer.id;
+            })
 
             drawBoard(shipContainer, board, space, size, shipColor.notPlaced, 'white')
 
@@ -201,6 +208,9 @@ function showAvailableShips(container, ships, space, size, shipColor, background
         }
     })
 }
+
+// Selected ship from available ships
+let selectedShip = -1;
 
 // Initialize generator.
 function init() {
