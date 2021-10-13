@@ -254,6 +254,23 @@ function previewPosition(dimensions, event, size, off) {
     return { x: left, y: top }
 }
 
+function removeShip(board, position) {
+    if(isOnBoard(board, position) && board[position.x][position.y] == 1) {
+        board[position.x][position.y] = 0
+
+        return  removeShip(board, { x: position.x - 1, y: position.y - 1 }) +
+                removeShip(board, { x: position.x - 1, y: position.y }) +
+                removeShip(board, { x: position.x - 1, y: position.y + 1 }) +
+                removeShip(board, { x: position.x, y: position.y - 1 }) +
+                removeShip(board, { x: position.x, y: position.y }) +
+                removeShip(board, { x: position.x, y: position.y + 1 }) +
+                removeShip(board, { x: position.x + 1, y: position.y - 1 }) +
+                removeShip(board, { x: position.x + 1, y: position.y }) +
+                removeShip(board, { x: position.x + 1, y: position.y + 1 }) + 1
+    }
+    else return 0
+}
+
 /**
  * Size of the container (absoulte).
  * 
@@ -345,23 +362,26 @@ function init() {
         placeShipPreview(boardContainer, board, boardDimensions, event, space, elementSize, shipColor, 'black')
     }, false)
     boardContainer.addEventListener('click', event => {
-        showAvailableShips(availableShipsContainer, shipsToPlace, space, elementSize, shipColor, 'black')
-        
         const position = previewPosition(boardDimensions, event, elementSize, boardContainer.getBoundingClientRect())
-        const placePositions = Array(selectedShipSize)
-        for(let i = 0; i < selectedShipSize; i ++) placePositions[i] = selectedShipDirection? { x: position.x + i, y: position.y }: { x: position.x, y: position.y + i }
 
-        if(canPlaceShip(board, placePositions)) {
-            placePositions.forEach(pos => board[pos.x][pos.y] = 1)
-            if(selectedShipSize > 0) shipsToPlace.find(ship => ship.size === selectedShipSize).quantity --
-            shipsToPlace = shipsToPlace.filter((ship, index, arr) => ship.quantity > 0)
-            selectedShipSize = 0
-            selectedShip = -1
+        if(selectedShip < 0) {
+            shipsToPlace.push({ size: removeShip(board, position), quantity: 1 })
+        } else {
+            const placePositions = Array(selectedShipSize)
+            for(let i = 0; i < selectedShipSize; i ++) placePositions[i] = selectedShipDirection? { x: position.x + i, y: position.y }: { x: position.x, y: position.y + i }
 
-            showAvailableShips(availableShipsContainer, shipsToPlace, space, elementSize, shipColor, 'black')
-            drawBoard(boardContainer, board, space, elementSize, shipColor.placed, emptyColor)
-            placeShipPreview(boardContainer, board, boardDimensions, event, space, elementSize, shipColor, 'black')
+            if(canPlaceShip(board, placePositions)) {
+                placePositions.forEach(pos => board[pos.x][pos.y] = 1)
+                if(selectedShipSize > 0) shipsToPlace.find(ship => ship.size === selectedShipSize).quantity --
+                shipsToPlace = shipsToPlace.filter((ship, index, arr) => ship.quantity > 0)
+                selectedShipSize = 0
+                selectedShip = -1
+            }
         }
+
+        showAvailableShips(availableShipsContainer, shipsToPlace, space, elementSize, shipColor, 'black')
+        drawBoard(boardContainer, board, space, elementSize, shipColor.placed, emptyColor)
+        placeShipPreview(boardContainer, board, boardDimensions, event, space, elementSize, shipColor, 'black')
     })
 }
 
