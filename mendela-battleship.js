@@ -6,6 +6,17 @@
  *      y: number
  * } Position
  */
+/**
+ * Colors of ship in different states.
+ * 
+ * @typedef {
+ *      placed: string,
+ *      notPlaced: string,
+ *      hover: string,
+ *      canPlace: string,
+ *      cantPlace: string
+ * } ShipColor
+ */
 
 /**
  * Show a board.
@@ -158,7 +169,7 @@ function isOnBoard(board, position) {
  * @param {Array.<{ size: number, quantity: number }>} ships - available ships
  * @param {Position} space - spacing around elements
  * @param {Position} size - length of edges of the ship
- * @param {string} shipColor - color for a ship
+ * @param {ShipColor} shipColor - color for a ship
  * @param {string} backgroundColor - background color behind ship
  */
 function showAvailableShips(container, ships, space, size, shipColor, backgroundColor) {
@@ -169,14 +180,20 @@ function showAvailableShips(container, ships, space, size, shipColor, background
             const board = Array(ship.size).fill([ 1 ])
 
             const shipContainer = document.createElement('div')
+
             shipContainer.style.position = 'relative'
             shipContainer.style.top = shipNumber * size.x + space.x + 'px'
             shipContainer.style.height = size.x + 'px'
             shipContainer.style.width = ship.size * size.y + 'px'
             shipContainer.style.backgroundColor = backgroundColor
             shipContainer.style.marginBottom = `-${ size.x - 15 }px`
+            console.log(shipContainer.children);
 
-            drawBoard(shipContainer, board, space, size, shipColor, 'white')
+            shipContainer.addEventListener('mouseenter', () => [ ... shipContainer.children ].forEach(child => child.style.backgroundColor = shipColor.hover))
+            shipContainer.addEventListener('mouseleave', () => [ ... shipContainer.children ].forEach(child => child.style.backgroundColor = shipColor.notPlaced))
+
+
+            drawBoard(shipContainer, board, space, size, shipColor.notPlaced, 'white')
 
             container.appendChild(shipContainer)
 
@@ -215,9 +232,15 @@ function init() {
     /**
      * Color of ships.
      * 
-     * @type {string}
+     * @type {ShipColor}
      */
-    const shipColor = 'black'
+    const shipColor = {
+        placed: 'blue',
+        notPlaced: 'gray',
+        hover: 'red',
+        canPlace: 'green',
+        cantPlace: 'red'
+    }
     /**
      * Color of empty elements on a board.
      * 
@@ -243,7 +266,7 @@ function init() {
     // Container for board.
     const boardContainer = document.getElementsByClassName('board')[0]
 
-    drawBoard(boardContainer, board, space, elementSize, shipColor, emptyColor)
+    drawBoard(boardContainer, board, space, elementSize, shipColor.placed, emptyColor)
 
     const availableShipsContainer = document.getElementsByClassName('availableShips')[0]
     showAvailableShips(availableShipsContainer, ships, space, elementSize, shipColor, 'black')
