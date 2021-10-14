@@ -363,7 +363,8 @@ function init() {
         const position = previewPosition(boardDimensions, event, elementSize, playerBoardContainer.getBoundingClientRect())
 
         if(selectedShip < 0) {
-            shipsToPlace.push({ size: removeShip(playerBoard, position), quantity: 1 })
+            const removedShipSize = removeShip(playerBoard, position)
+            if(removedShipSize > 0) shipsToPlace.push({ size: removedShipSize, quantity: 1 })
         } else {
             const placePositions = Array(selectedShipSize)
             for(let i = 0; i < selectedShipSize; i ++) placePositions[i] = selectedShipDirection? { x: position.x + i, y: position.y }: { x: position.x, y: position.y + i }
