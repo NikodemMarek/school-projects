@@ -333,45 +333,43 @@ let selectedShipSize = 0
 let selectedShipDirection = true // True - horizontal, false - vertical.
 
 // Container for board.
-const boardContainer = document.getElementsByClassName('board')[0]
+const playerBoardContainer = document.getElementsByClassName('board')[0]
 const previewContainer = document.getElementsByClassName('preview')[0]
 const availableShipsContainer = document.getElementsByClassName('availableShips')[0]
+const aiBoardContainer = document.getElementsByClassName('aiBoard')[0]
 
 
 // Initialize generator.
 function init() {
-    // Generate a board with provided ships.
-    //const board = placeShips(boardDimensions, ships)
-
-    const board = Array(boardDimensions.x)
-    for(let i = 0; i < board.length; i ++) board[i] = Array(boardDimensions.y).fill(0)
+    const playerBoard = Array(boardDimensions.x)
+    for(let i = 0; i < playerBoard.length; i ++) playerBoard[i] = Array(boardDimensions.y).fill(0)
 
     let shipsToPlace = JSON.parse(JSON.stringify(ships))
 
     showAvailableShips(availableShipsContainer, shipsToPlace, space, elementSize, shipColor, 'black')
-    drawBoard(boardContainer, board, space, elementSize, shipColor.placed, emptyColor)
+    drawBoard(playerBoardContainer, playerBoard, space, elementSize, shipColor.placed, emptyColor)
 
-    boardContainer.addEventListener('mousemove', event => {
-        drawBoard(boardContainer, board, space, elementSize, shipColor.placed, emptyColor)
-        placeShipPreview(boardContainer, board, boardDimensions, event, space, elementSize, shipColor, 'black')
+    playerBoardContainer.addEventListener('mousemove', event => {
+        drawBoard(playerBoardContainer, playerBoard, space, elementSize, shipColor.placed, emptyColor)
+        placeShipPreview(playerBoardContainer, playerBoard, boardDimensions, event, space, elementSize, shipColor, 'black')
     })
-    boardContainer.addEventListener('contextmenu', event => {
+    playerBoardContainer.addEventListener('contextmenu', event => {
         event.preventDefault()
         selectedShipDirection = !selectedShipDirection
-        drawBoard(boardContainer, board, space, elementSize, shipColor.placed, emptyColor)
-        placeShipPreview(boardContainer, board, boardDimensions, event, space, elementSize, shipColor, 'black')
+        drawBoard(playerBoardContainer, playerBoard, space, elementSize, shipColor.placed, emptyColor)
+        placeShipPreview(playerBoardContainer, playerBoard, boardDimensions, event, space, elementSize, shipColor, 'black')
     }, false)
-    boardContainer.addEventListener('click', event => {
-        const position = previewPosition(boardDimensions, event, elementSize, boardContainer.getBoundingClientRect())
+    playerBoardContainer.addEventListener('click', event => {
+        const position = previewPosition(boardDimensions, event, elementSize, playerBoardContainer.getBoundingClientRect())
 
         if(selectedShip < 0) {
-            shipsToPlace.push({ size: removeShip(board, position), quantity: 1 })
+            shipsToPlace.push({ size: removeShip(playerBoard, position), quantity: 1 })
         } else {
             const placePositions = Array(selectedShipSize)
             for(let i = 0; i < selectedShipSize; i ++) placePositions[i] = selectedShipDirection? { x: position.x + i, y: position.y }: { x: position.x, y: position.y + i }
 
-            if(canPlaceShip(board, placePositions)) {
-                placePositions.forEach(pos => board[pos.x][pos.y] = 1)
+            if(canPlaceShip(playerBoard, placePositions)) {
+                placePositions.forEach(pos => playerBoard[pos.x][pos.y] = 1)
                 if(selectedShipSize > 0) shipsToPlace.find(ship => ship.size === selectedShipSize).quantity --
                 shipsToPlace = shipsToPlace.filter((ship, index, arr) => ship.quantity > 0)
                 selectedShipSize = 0
@@ -380,9 +378,13 @@ function init() {
         }
 
         showAvailableShips(availableShipsContainer, shipsToPlace, space, elementSize, shipColor, 'black')
-        drawBoard(boardContainer, board, space, elementSize, shipColor.placed, emptyColor)
-        placeShipPreview(boardContainer, board, boardDimensions, event, space, elementSize, shipColor, 'black')
+        drawBoard(playerBoardContainer, playerBoard, space, elementSize, shipColor.placed, emptyColor)
+        placeShipPreview(playerBoardContainer, playerBoard, boardDimensions, event, space, elementSize, shipColor, 'black')
     })
+
+    // Generate a board with provided ships.
+    const aiBoard = placeShips(boardDimensions, ships)
+    drawBoard(aiBoardContainer, aiBoard, space, elementSize, shipColor.placed, emptyColor)
 }
 
 init()
