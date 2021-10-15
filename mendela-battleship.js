@@ -271,6 +271,21 @@ function removeShip(board, position) {
     else return 0
 }
 
+function shoot(board, position) {
+    if(isOnBoard(board, position) && isOnBoard) {
+        if(board[position.x][position.y] == 1) {
+            board[position.x][position.y] = 3
+            return true
+        }
+        else if(board[position.x][position.y] == 2 || board[position.x][position.y] == 3) return false
+        else {
+            board[position.x][position.y] = 2
+            return true
+        }
+    }
+    else return false
+}
+
 /**
  * Size of the container (absoulte).
  * 
@@ -332,6 +347,8 @@ let selectedShip = -1
 let selectedShipSize = 0
 let selectedShipDirection = true // True - horizontal, false - vertical.
 
+let gameMode = 0 // 0 - placing ships, 1 - game.
+
 // Container for board.
 const playerBoardContainer = document.getElementsByClassName('board')[0]
 const previewContainer = document.getElementsByClassName('preview')[0]
@@ -360,32 +377,66 @@ function init() {
         placeShipPreview(playerBoardContainer, playerBoard, boardDimensions, event, space, elementSize, shipColor, 'black')
     }, false)
     playerBoardContainer.addEventListener('click', event => {
-        const position = previewPosition(boardDimensions, event, elementSize, playerBoardContainer.getBoundingClientRect())
+        if(gameMode == 0) {
+            const position = previewPosition(boardDimensions, event, elementSize, playerBoardContainer.getBoundingClientRect())
 
-        if(selectedShip < 0) {
-            const removedShipSize = removeShip(playerBoard, position)
-            if(removedShipSize > 0) shipsToPlace.push({ size: removedShipSize, quantity: 1 })
-        } else {
-            const placePositions = Array(selectedShipSize)
-            for(let i = 0; i < selectedShipSize; i ++) placePositions[i] = selectedShipDirection? { x: position.x + i, y: position.y }: { x: position.x, y: position.y + i }
+            if(selectedShip < 0) {
+                const removedShipSize = removeShip(playerBoard, position)
+                if(removedShipSize > 0) shipsToPlace.push({ size: removedShipSize, quantity: 1 })
+            } else {
+                const placePositions = Array(selectedShipSize)
+                for(let i = 0; i < selectedShipSize; i ++) placePositions[i] = selectedShipDirection? { x: position.x + i, y: position.y }: { x: position.x, y: position.y + i }
 
-            if(canPlaceShip(playerBoard, placePositions)) {
-                placePositions.forEach(pos => playerBoard[pos.x][pos.y] = 1)
-                if(selectedShipSize > 0) shipsToPlace.find(ship => ship.size === selectedShipSize).quantity --
-                shipsToPlace = shipsToPlace.filter((ship, index, arr) => ship.quantity > 0)
-                selectedShipSize = 0
-                selectedShip = -1
+                if(canPlaceShip(playerBoard, placePositions)) {
+                    placePositions.forEach(pos => playerBoard[pos.x][pos.y] = 1)
+                    if(selectedShipSize > 0) shipsToPlace.find(ship => ship.size === selectedShipSize).quantity --
+                    shipsToPlace = shipsToPlace.filter((ship, index, arr) => ship.quantity > 0)
+                    selectedShipSize = 0
+
+                    if(shipsToPlace.length < 1) {
+                        const startGameButton = document.getElementsByClassName('startGame')[0]
+                        startGameButton.style.display = 'flex'
+                        startGameButton.addEventListener('click', () => {
+                            startGameButton.style.display = 'none'
+                            gameMode = 1
+                        })
+                    }
+                    else selectedShip = -1
+                }
             }
-        }
 
-        showAvailableShips(availableShipsContainer, shipsToPlace, space, elementSize, shipColor, 'black')
-        drawBoard(playerBoardContainer, playerBoard, space, elementSize, shipColor.placed, emptyColor)
-        placeShipPreview(playerBoardContainer, playerBoard, boardDimensions, event, space, elementSize, shipColor, 'black')
+            showAvailableShips(availableShipsContainer, shipsToPlace, space, elementSize, shipColor, 'black')
+            drawBoard(playerBoardContainer, playerBoard, space, elementSize, shipColor.placed, emptyColor)
+            placeShipPreview(playerBoardContainer, playerBoard, boardDimensions, event, space, elementSize, shipColor, 'black')
+        }   
     })
 
     // Generate a board with provided ships.
     const aiBoard = placeShips(boardDimensions, ships)
-    drawBoard(aiBoardContainer, aiBoard, space, elementSize, shipColor.placed, emptyColor)
+    drawBoard(aiBoardContainer, playerBoard, space, elementSize, shipColor.placed, emptyColor)
+
+    aiBoardContainer.addEventListener('click', event => {
+        if(gameMode == 1) {
+            const position = previewPosition(boardDimensions, event, elementSize, aiBoardContainer.getBoundingClientRect())
+            if(shoot(aiBoard, position)) {
+                let aiGuessPosition
+                do {
+                    aiGuessPosition = {
+                        x: Math.floor(Math.random() * playerBoard.length),
+                        y: Math.floor(Math.random() * playerBoard[0].length)
+                    }
+                } while(!shoot(playerBoard, aiGuessPosition))
+
+                if(!aiBoard.some(column => column.some(element => element == 1))) {
+                    drawBoard(aiBoardContainer, aiBoard, space, elementSize, shipColor.placed, emptyColor)
+                    alert('Wygrałeś')
+                } else if(!playerBoard.some(column => column.some(element => element == 1))) {
+                    drawBoard(aiBoardContainer, aiBoard, space, elementSize, shipColor.placed, emptyColor)
+                    alert('Przegrałeś')
+                }
+            }
+        }
+    })
 }
 
 init()
