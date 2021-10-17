@@ -297,7 +297,7 @@ function shoot(board, position) {
     if(isOnBoard(board, position) && isOnBoard) {
         if(board[position.x][position.y] == 1) {
             board[position.x][position.y] = 3
-            return true
+            return false
         }
         else if(board[position.x][position.y] == 2 || board[position.x][position.y] == 3) return false
         else {
@@ -371,6 +371,7 @@ let selectedShipSize = 0
 let selectedShipDirection = true // True - horizontal, false - vertical.
 
 let gameMode = 0 // 0 - placing ships, 1 - game.
+let turn = 0 // 0 - player, 1 - ai.
 
 // Container for board.
 const playerBoardContainer = document.getElementsByClassName('board')[0]
@@ -439,30 +440,46 @@ function init() {
     drawBoard(aiBoardContainer, playerBoard, space, elementSize, colors)
 
     aiBoardContainer.addEventListener('click', event => {
-        if(gameMode == 1) {
+        if(gameMode == 1 && turn == 0) {
             const position = previewPosition(boardDimensions, event, elementSize, aiBoardContainer.getBoundingClientRect())
-            if(shoot(aiBoard, position)) {
+
+            const didKill = shoot(aiBoard, position)
+            drawBoard(aiBoardContainer, aiBoard, space, elementSize, { empty: colors.empty, placed: colors.empty })
+
+            if(didKill) {
+                turn = 1
+                
                 drawBoard(aiBoardContainer, aiBoard, space, elementSize, { empty: colors.empty, placed: colors.empty })
 
+                let aiGuessPosition
+                let didAiKill
                 setTimeout(() => {
-                    let aiGuessPosition
                     do {
-                        aiGuessPosition = {
-                            x: Math.floor(Math.random() * playerBoard.length),
-                            y: Math.floor(Math.random() * playerBoard[0].length)
-                        }
-                    } while(!shoot(playerBoard, aiGuessPosition))
-                    
-                    drawBoard(playerBoardContainer, playerBoard, space, elementSize, colors)
+                            aiGuessPosition = {
+                                x: Math.floor(Math.random() * playerBoard.length),
+                                y: Math.floor(Math.random() * playerBoard[0].length)
+                            }
+                            
+                            didAiKill = shoot(playerBoard, aiGuessPosition)
+                            drawBoard(playerBoardContainer, playerBoard, space, elementSize, colors)
+                    } while(!didAiKill)
 
-                    if(!aiBoard.some(column => column.some(element => element == 1))) {
-                        drawBoard(aiBoardContainer, aiBoard, space, elementSize, colors)
-                        alert('Wygrałeś')
-                    } else if(!playerBoard.some(column => column.some(element => element == 1))) {
-                        drawBoard(aiBoardContainer, aiBoard, space, elementSize, colors)
-                        alert('Przegrałeś')
-                    }
+                    turn = 0
                 }, 1000)
+
+                drawBoard(playerBoardContainer, playerBoard, space, elementSize, colors)
+
+                if(!aiBoard.some(column => column.some(element => element == 1))) {
+                    drawBoard(aiBoardContainer, aiBoard, space, elementSize, colors)
+
+                    gemeMode = 3
+                    alert('Wygrałeś')
+                } else if(!playerBoard.some(column => column.some(element => element == 1))) {
+                    drawBoard(aiBoardContainer, aiBoard, space, elementSize, colors)
+
+                    gemeMode = 3
+                    alert('Przegrałeś')
+                }
             }
         }
     })
