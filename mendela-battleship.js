@@ -442,25 +442,27 @@ function init() {
         if(gameMode == 1) {
             const position = previewPosition(boardDimensions, event, elementSize, aiBoardContainer.getBoundingClientRect())
             if(shoot(aiBoard, position)) {
-                drawBoard(playerBoardContainer, playerBoard, space, elementSize, colors)
-
-                let aiGuessPosition
-                do {
-                    aiGuessPosition = {
-                        x: Math.floor(Math.random() * playerBoard.length),
-                        y: Math.floor(Math.random() * playerBoard[0].length)
-                    }
-                } while(!shoot(playerBoard, aiGuessPosition))
-
                 drawBoard(aiBoardContainer, aiBoard, space, elementSize, { empty: colors.empty, placed: colors.empty })
 
-                if(!aiBoard.some(column => column.some(element => element == 1))) {
-                    drawBoard(aiBoardContainer, aiBoard, space, elementSize, colors)
-                    alert('Wygrałeś')
-                } else if(!playerBoard.some(column => column.some(element => element == 1))) {
-                    drawBoard(aiBoardContainer, aiBoard, space, elementSize, colors)
-                    alert('Przegrałeś')
-                }
+                setTimeout(() => {
+                    let aiGuessPosition
+                    do {
+                        aiGuessPosition = {
+                            x: Math.floor(Math.random() * playerBoard.length),
+                            y: Math.floor(Math.random() * playerBoard[0].length)
+                        }
+                    } while(!shoot(playerBoard, aiGuessPosition))
+                    
+                    drawBoard(playerBoardContainer, playerBoard, space, elementSize, colors)
+
+                    if(!aiBoard.some(column => column.some(element => element == 1))) {
+                        drawBoard(aiBoardContainer, aiBoard, space, elementSize, colors)
+                        alert('Wygrałeś')
+                    } else if(!playerBoard.some(column => column.some(element => element == 1))) {
+                        drawBoard(aiBoardContainer, aiBoard, space, elementSize, colors)
+                        alert('Przegrałeś')
+                    }
+                }, 1000)
             }
         }
     })
