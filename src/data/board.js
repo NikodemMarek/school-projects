@@ -13,13 +13,15 @@ export default class Board {
         // Optional.
         {
             boardColor,
+            spacing,
             boardData
         }
     ) {
         this.boardContainer = {
             container: boardContainer,
             size: boardContainerSize,
-            color: boardColor || 'black'
+            color: boardColor || 'black',
+            spacing: spacing || { x: 0, y: 0 }
         }
         this.board = {
             size: boardSize,
