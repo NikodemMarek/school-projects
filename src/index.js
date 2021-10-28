@@ -16,7 +16,8 @@ const elementProperties = {
         class: 'e0'
     },
     1: {
-        class: 'e1'
+        class: 'e1',
+        content: `<div style='background-color: blue; width: 100%; height: 100%'></div>`
     }
 }
 const spacing = {

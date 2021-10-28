@@ -22,6 +22,8 @@ export function drawElement(container, element, elementProperties) {
     newElement.classList.add(elementProperties.class)
     newElement.style.width = element.size.x + 'px'
     newElement.style.height = element.size.y + 'px'
+    
+    newElement.innerHTML = elementProperties.content || ''
 
     container.appendChild(newElement)
 }
