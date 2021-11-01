@@ -7,17 +7,33 @@ export default function draw(board) {
     board.boardContainer.container.style.paddingTop = board.boardContainer.spacing.y + 'px'
     board.boardContainer.container.style.paddingLeft = board.boardContainer.spacing.y + 'px'
 
+    let elements = 0
     board.board.boardData.forEach(column => {
         const columnContainer = document.createElement('div')
         columnContainer.style.marginRight = board.boardContainer.spacing.y + 'px'
         columnContainer.style.float = 'left'
 
-        column.forEach(index => drawElement(columnContainer, board.element, board.elementProperties[index], board.boardContainer.spacing))
+        column.forEach(index => {
+            drawElement(
+                columnContainer,
+                board.element,
+                board.boardContainer.spacing,
+                board.elementProperties[index],
+                board.additionalElementData[elements]
+            )
+            elements ++
+        })
 
         board.boardContainer.container.appendChild(columnContainer)
     })
 }
-export function drawElement(container, element, elementProperties, spacing) {
+export function drawElement(
+    container,
+    element,
+    spacing,
+    elementProperties,
+    additionalElementData
+) {
     const newElement = document.createElement('div')
     newElement.classList.add(elementProperties.class)
     newElement.style.width = element.size.x + 'px'
@@ -29,7 +45,7 @@ export function drawElement(container, element, elementProperties, spacing) {
     if('eventListeners' in elementProperties) elementProperties.eventListeners.forEach(eventListener =>
         newElement.addEventListener(eventListener.event, event => {
             event.preventDefault()
-            eventListener.perform(newElement, event)
+            eventListener.perform(newElement, event, additionalElementData)
             return false
         }, false))
 

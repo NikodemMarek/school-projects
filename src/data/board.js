@@ -4,6 +4,7 @@ export default class Board {
     
     element = undefined
     elementProperties = undefined
+    additionalElementData = undefined
 
     constructor(
         boardContainer,
@@ -14,7 +15,8 @@ export default class Board {
         {
             boardColor,
             spacing,
-            boardData
+            boardData,
+            additionalElementData
         }
     ) {
         this.boardContainer = {
@@ -27,6 +29,17 @@ export default class Board {
             size: boardSize,
             boardData: boardData || JSON.parse(JSON.stringify(Array(boardSize.x).fill(Array(boardSize.y).fill(0))))
         }
+
+        this.additionalElementData = additionalElementData || {  }
+
+        let elements = 0
+        this.board.boardData.forEach(column =>
+            column.filter(element => {
+                if(elementProperties[element].additionalData != undefined) this.additionalElementData[elements] = elementProperties[element].additionalData
+                elements ++
+            }))
+        
+        this.additionalElementData = JSON.parse(JSON.stringify(this.additionalElementData))
 
         this.element = {
             size: {

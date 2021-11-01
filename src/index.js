@@ -21,7 +21,7 @@ const elementProperties = {
         eventListeners: [
             {
                 event: 'click',
-                perform: (element, event) => alert('he clicked me')
+                perform: (element, event, elementData) => alert('he clicked me')
             }
         ]
     },
@@ -30,11 +30,34 @@ const elementProperties = {
         eventListeners: [
             {
                 event: 'contextmenu',
-                perform: (element, event) => {
-                    element.style.backgroundColor = 'white'
+                perform: (element, event, elementData) => {
+                    element.style.backgroundColor = elementData.clicked? 'white': 'black'
+                    elementData.clicked = !elementData.clicked
                 }
             }
-        ]
+        ],
+        additionalData: {
+            clicked: false
+        }
+    },
+    3: {
+        class: 'e1',
+        content: `<div style='background-color: blue; width: 100%; height: 100%'></div>`,
+        eventListeners: [
+            {
+                event: 'mousemove',
+                perform: (element, event, elementData) => {
+                    elementData.position.x = event.clientX
+                    elementData.position.y = event.clientY
+                }
+            }
+        ],
+        additionalData: {
+            position: {
+                x: 0,
+                y: 0
+            }
+        }
     }
 }
 const spacing = {
@@ -43,9 +66,9 @@ const spacing = {
 }
 const boardData = [
     [ 0, 0, 1, 0, 0 ],
-    [ 2, 1, 2, 0, 1 ],
-    [ 0, 0, 1, 0, 0 ],
-    [ 1, 2, 0, 1, 0 ],
+    [ 2, 3, 2, 0, 1 ],
+    [ 0, 0, 3, 0, 0 ],
+    [ 1, 2, 0, 3, 0 ],
     [ 1, 0, 0, 1, 2 ]
 ]
 
