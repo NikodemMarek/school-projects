@@ -5,13 +5,13 @@ export default function draw(board) {
     board.boardContainer.container.style.backgroundColor = board.boardContainer.color
 
     board.boardContainer.container.style.paddingTop = board.boardContainer.spacing.y + 'px'
-    board.boardContainer.container.style.paddingLeft = board.boardContainer.spacing.y + 'px'
+    board.boardContainer.container.style.paddingLeft = board.boardContainer.spacing.x + 'px'
 
     let elements = 0
     board.board.boardData.forEach(column => {
         const columnContainer = document.createElement('div')
-        columnContainer.style.marginRight = board.boardContainer.spacing.y + 'px'
-        columnContainer.style.float = 'left'
+        columnContainer.style.marginBottom = board.boardContainer.spacing.y + 'px'
+        columnContainer.style.height = board.element.size.y + 'px'
 
         column.forEach(index => {
             drawElement(
@@ -38,7 +38,8 @@ export function drawElement(
     newElement.classList.add(elementProperties.class)
     newElement.style.width = element.size.x + 'px'
     newElement.style.height = element.size.y + 'px'
-    newElement.style.marginBottom = spacing.y + 'px'
+    newElement.style.marginRight = spacing.x + 'px'
+    newElement.style.float = 'left'
     
     newElement.innerHTML = elementProperties.content || ''
 
