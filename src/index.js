@@ -29,7 +29,7 @@ const elementProperties = {
         class: 'e0',
         eventListeners: [
             {
-                event: 'click',
+                event: 'contextmenu',
                 perform: (element, event) => {
                     element.style.backgroundColor = 'white'
                 }
