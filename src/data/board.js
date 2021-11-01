@@ -30,8 +30,8 @@ export default class Board {
 
         this.element = {
             size: {
-                x: boardContainerSize.x / boardSize.x,
-                y: boardContainerSize.y / boardSize.y
+                x: boardContainerSize.x / boardSize.x - spacing.x,
+                y: boardContainerSize.y / boardSize.y - spacing.y
             }
         }
 
