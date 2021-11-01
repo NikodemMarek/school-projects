@@ -17,7 +17,24 @@ const elementProperties = {
     },
     1: {
         class: 'e1',
-        content: `<div style='background-color: blue; width: 100%; height: 100%'></div>`
+        content: `<div style='background-color: blue; width: 100%; height: 100%'></div>`,
+        eventListeners: [
+            {
+                event: 'click',
+                perform: (element, event) => alert('he clicked me')
+            }
+        ]
+    },
+    2: {
+        class: 'e0',
+        eventListeners: [
+            {
+                event: 'click',
+                perform: (element, event) => {
+                    element.style.backgroundColor = 'white'
+                }
+            }
+        ]
     }
 }
 const spacing = {
@@ -26,10 +43,10 @@ const spacing = {
 }
 const boardData = [
     [ 0, 0, 1, 0, 0 ],
-    [ 0, 1, 0, 0, 1 ],
+    [ 2, 1, 2, 0, 1 ],
     [ 0, 0, 1, 0, 0 ],
-    [ 1, 0, 0, 1, 0 ],
-    [ 1, 0, 0, 1, 0 ]
+    [ 1, 2, 0, 1, 0 ],
+    [ 1, 0, 0, 1, 2 ]
 ]
 
 const board = new Board(

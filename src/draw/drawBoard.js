@@ -26,5 +26,9 @@ export function drawElement(container, element, elementProperties, spacing) {
     
     newElement.innerHTML = elementProperties.content || ''
 
+    if('eventListeners' in elementProperties) elementProperties.eventListeners.forEach(eventListener =>
+        newElement.addEventListener(eventListener.event, event =>
+            eventListener.perform(newElement, event)))
+
     container.appendChild(newElement)
 }
