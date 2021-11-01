@@ -8,18 +8,25 @@ export default function draw(board) {
     board.boardContainer.container.style.paddingLeft = board.boardContainer.spacing.x + 'px'
 
     let elements = 0
-    board.board.boardData.forEach(column => {
+    board.board.boardData.forEach((column, columnIndex) => {
         const columnContainer = document.createElement('div')
         columnContainer.style.marginBottom = board.boardContainer.spacing.y + 'px'
         columnContainer.style.height = board.element.size.y + 'px'
 
-        column.forEach(index => {
+        column.forEach((element, index) => {
             drawElement(
                 columnContainer,
                 board.element,
                 board.boardContainer.spacing,
-                board.elementProperties[index],
-                board.additionalElementData[elements]
+                board.elementProperties[element],
+                {
+                    elementPosition: {
+                        x: columnIndex,
+                        y: index
+                    },
+                    ... board.additionalElementData[elements]
+                }
+                
             )
             elements ++
         })
