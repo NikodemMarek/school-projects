@@ -1,6 +1,8 @@
 import drawBoard from './draw/drawBoard.js'
 import Board from './data/board.js'
 
+let gameStarted = false
+
 const boardContainer = document.getElementsByClassName('board')[0]
 const boardContainerSize = {
     x: 250,
@@ -11,9 +13,41 @@ const boardSize = {
     y: 9
 }
 
+const spaceAroundStart = {
+    x: 1,
+    y: 1
+}
+
 const elementProperties = {
     0: {
-        class: 'covered'
+        class: 'covered',
+        eventListeners: [
+            {
+                event: 'click',
+                perform: (element, event, elementData) => {
+                    if(gameStarted) {
+
+                    }
+                    else {
+                        gameStarted = true
+
+                        placeBombs(20, board,
+                            {
+                                from: {
+                                    x: elementData.elementPosition.x - spaceAroundStart.x,
+                                    y: elementData.elementPosition.y - spaceAroundStart.y
+                                },
+                                to: {
+                                    x: elementData.elementPosition.x + spaceAroundStart.x,
+                                    y: elementData.elementPosition.y + spaceAroundStart.y
+                                }
+                            }
+                        )
+                        drawBoard(board)
+                    }
+                }
+            }
+        ],
     },
     1: {
         class: 'uncovered',
@@ -90,28 +124,6 @@ function placeBomb(board, ... exclude) {
 function isNotInExcluded(position, ... exclude) { return exclude.every(range => position.x < range.from.x || position.y < range.from.y || position.x > range.to.x || position.y > range.to.y) }
 
 function init() {
-    placeBombs(60, board,
-        {
-            from: {
-                x: 4,
-                y: 4
-            },
-            to: {
-                x: 4,
-                y: 4
-            }
-        },
-        {
-            from: {
-                x: 1,
-                y: 1
-            },
-            to: {
-                x: 3,
-                y: 2
-            }
-        }
-    )
     drawBoard(board)
 }
 
