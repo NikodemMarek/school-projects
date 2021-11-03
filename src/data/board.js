@@ -56,4 +56,6 @@ Board.prototype.isOnBoard = function(position) { return position.x >= 0 && posit
 
 Board.prototype.valueAt = function(position) { return this.isOnBoard(position)? this.board.boardData[position.x][position.y]: null }
 Board.prototype.setValue = function(position, value) { if(this.isOnBoard(position)) this.board.boardData[position.x][position.y] = value }
+
 Board.prototype.isValue = function(position, value) { return this.isOnBoard(position) && this.valueAt(position) == value }
+Board.prototype.someValue = function(position, ... values) { return values.some(value => this.isValue(position, value)) }
