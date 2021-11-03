@@ -51,3 +51,9 @@ export default class Board {
         this.elementProperties = elementProperties
     }
 }
+
+Board.prototype.isOnBoard = function(position) { return position.x >= 0 && position.x < this.board.size.x && position.y >= 0 && position.y < this.board.size.y }
+
+Board.prototype.valueAt = function(position) { return this.isOnBoard(position)? this.board.boardData[position.x][position.y]: null }
+Board.prototype.setValue = function(position, value) { if(this.isOnBoard(position)) this.board.boardData[position.x][position.y] = value }
+Board.prototype.isValue = function(position, value) { return this.isOnBoard(position) && this.valueAt(position) == value }
