@@ -11,7 +11,7 @@ const boardSize = {
     y: 9
 }
 
-let elementProperties = {
+const elementProperties = {
     0: {
         class: 'covered'
     },
@@ -76,17 +76,43 @@ const board = new Board(
     }
 )
 
-board.board.boardData[1][1] = 1
-board.board.boardData[2][1] = 2
-board.board.boardData[3][1] = 3
-board.board.boardData[4][1] = 4
-board.board.boardData[5][1] = 5
-board.board.boardData[6][1] = 6
-board.board.boardData[7][1] = 7
-board.board.boardData[8][1] = 8
+function placeBombs(bombsQuantity, board, ... exclude) { for(let i = 0; i < bombsQuantity; i++) placeBomb(board, ... exclude) }
+function placeBomb(board, ... exclude) {
+    while(true) {
+        const position = {
+            x: Math.floor(Math.random() * board.board.size.x),
+            y: Math.floor(Math.random() * board.board.size.y)
+        }
 
-board.board.boardData[2][3] = 9
-board.board.boardData[3][3] = 10
-board.board.boardData[4][3] = 11
+        if(isNotInExcluded(position, ... exclude) && board.isValue(position, 0)) return board.setValue(position, 10)
+    }
+}
+function isNotInExcluded(position, ... exclude) { return exclude.every(range => position.x < range.from.x || position.y < range.from.y || position.x > range.to.x || position.y > range.to.y) }
 
-drawBoard(board)
+function init() {
+    placeBombs(60, board,
+        {
+            from: {
+                x: 4,
+                y: 4
+            },
+            to: {
+                x: 4,
+                y: 4
+            }
+        },
+        {
+            from: {
+                x: 1,
+                y: 1
+            },
+            to: {
+                x: 3,
+                y: 2
+            }
+        }
+    )
+    drawBoard(board)
+}
+
+init()
