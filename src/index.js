@@ -108,7 +108,7 @@ const elementProperties = {
         eventListeners: [
             {
                 event: 'click',
-                perform: (element, event, elementData) => gameOver()
+                perform: (element, event, elementData) => gameOver(board)
             }
         ],
     },
@@ -149,10 +149,10 @@ function placeBomb(board, ... exclude) {
 }
 function isNotInExcluded(position, ... exclude) { return exclude.every(range => position.x < range.from.x || position.y < range.from.y || position.x > range.to.x || position.y > range.to.y) }
 
-function gameOver() {
+function gameOver(board) {
     gameState = GameState.END
 
-    board.setAll(10, 11)
+    board.setAll(11, 10)
     drawBoard(board)
 }
 
