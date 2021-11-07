@@ -31,7 +31,20 @@ const elementProperties = {
                 event: 'click',
                 perform: (element, event, elementData) => {
                     if(gameState == GameState.GAME) {
+                        const bombsAround = [
+                            { x: elementData.elementPosition.x - 1, y: elementData.elementPosition.y - 1 },
+                            { x: elementData.elementPosition.x - 1, y: elementData.elementPosition.y },
+                            { x: elementData.elementPosition.x - 1, y: elementData.elementPosition.y + 1 },
+                            { x: elementData.elementPosition.x, y: elementData.elementPosition.y - 1 },
+                            { x: elementData.elementPosition.x, y: elementData.elementPosition.y + 1 },
+                            { x: elementData.elementPosition.x + 1, y: elementData.elementPosition.y - 1 },
+                            { x: elementData.elementPosition.x + 1, y: elementData.elementPosition.y },
+                            { x: elementData.elementPosition.x + 1, y: elementData.elementPosition.y + 1 }
+                        ].reduce((bombs, position) => board.isValue(position, 10)? bombs + 1: bombs, 0)
 
+                        board.setValue(elementData.elementPosition, bombsAround == 0? 12: bombsAround)
+                        
+                        drawBoard(board)
                     } else if(gameState == GameState.START) {
                         gameState = GameState.GAME
 
@@ -102,6 +115,9 @@ const elementProperties = {
     11: {
         class: 'bombExploded',
         content: `<span style='color: black;'>o</span>`
+    },
+    12: {
+        class: 'uncovered'
     }
 }
 
