@@ -91,7 +91,13 @@ const elementProperties = {
     },
     10: {
         class: 'bomb',
-        content: `<span style='color: black;'>o</span>`
+        content: `<span style='color: black;'>o</span>`,
+        eventListeners: [
+            {
+                event: 'click',
+                perform: (element, event, elementData) => gameOver()
+            }
+        ],
     },
     11: {
         class: 'bombExploded',
@@ -126,6 +132,13 @@ function placeBomb(board, ... exclude) {
     }
 }
 function isNotInExcluded(position, ... exclude) { return exclude.every(range => position.x < range.from.x || position.y < range.from.y || position.x > range.to.x || position.y > range.to.y) }
+
+function gameOver() {
+    gameState = GameState.END
+
+    board.setAll(10, 11)
+    drawBoard(board)
+}
 
 function init() {
     drawBoard(board)
