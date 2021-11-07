@@ -54,10 +54,10 @@ export default class Board {
 
 Board.prototype.isOnBoard = function(position) { return position.x >= 0 && position.x < this.board.size.x && position.y >= 0 && position.y < this.board.size.y }
 
-Board.prototype.applyFor = function(value, callbackfn) {
+Board.prototype.applyFor = function(callbackfn, ... values) {
     this.board.boardData.forEach((row, rowIndex) =>
         row.forEach((element, index) => {
-            if(element == value) callbackfn({
+            if(values.some(value => value == element)) callbackfn({
                 x: rowIndex,
                 y: index
             })
@@ -65,7 +65,7 @@ Board.prototype.applyFor = function(value, callbackfn) {
 }
 
 Board.prototype.setValue = function(position, value) { if(this.isOnBoard(position)) this.board.boardData[position.x][position.y] = value }
-Board.prototype.setAll = function(value, newValue) { this.applyFor(value, position => this.setValue(position, newValue)) }
+Board.prototype.setAll = function(newValue, ... values) { this.applyFor(position => this.setValue(position, newValue), ... values) }
 
 Board.prototype.valueAt = function(position) { return this.isOnBoard(position)? this.board.boardData[position.x][position.y]: null }
 Board.prototype.isValue = function(position, value) { return this.isOnBoard(position) && this.valueAt(position) == value }
