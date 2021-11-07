@@ -23,9 +23,26 @@ const spaceAroundStart = {
     y: 1
 }
 
-const onCoveredClick = (element, event, elementData) => {
-        board.setValue(elementData.elementPosition, board.valueAt(elementData.elementPosition) + 12)
-        drawBoard(board)
+const onCoveredClick = (position) => {
+        if(gameState == GameState.GAME && board.isOnBoard(position)) {
+            if(board.isValue(position, 0)) {
+                board.setValue(position, 12);
+
+                [
+                    { x: position.x - 1, y: position.y - 1 },
+                    { x: position.x - 1, y: position.y },
+                    { x: position.x - 1, y: position.y + 1 },
+                    { x: position.x, y: position.y - 1 },
+                    { x: position.x, y: position.y + 1 },
+                    { x: position.x + 1, y: position.y - 1 },
+                    { x: position.x + 1, y: position.y },
+                    { x: position.x + 1, y: position.y + 1 }
+                ].forEach(pos => onCoveredClick(pos))
+            } else if(board.someValue(position, 1, 2, 3, 4, 5, 6, 7, 8, 9)) {
+                board.setValue(position, board.valueAt(position) + 12)
+                drawBoard(board)
+            }
+        }
     }
 
 const elementProperties = {
@@ -36,7 +53,7 @@ const elementProperties = {
                 event: 'click',
                 perform: (element, event, elementData) => {
                     if(gameState == GameState.GAME) {
-                        
+                        onCoveredClick(elementData.elementPosition)
                     } else if(gameState == GameState.START) {
                         gameState = GameState.GAME
 
@@ -79,7 +96,7 @@ const elementProperties = {
         eventListeners: [
             {
                 event: 'click',
-                perform: (element, event, elementData) => onCoveredClick(element, event, elementData)
+                perform: (element, event, elementData) => onCoveredClick(elementData.elementPosition)
             }
         ]
     },
@@ -88,7 +105,7 @@ const elementProperties = {
         eventListeners: [
             {
                 event: 'click',
-                perform: (element, event, elementData) => onCoveredClick(element, event, elementData)
+                perform: (element, event, elementData) => onCoveredClick(elementData.elementPosition)
             }
         ]
     },
@@ -97,7 +114,7 @@ const elementProperties = {
         eventListeners: [
             {
                 event: 'click',
-                perform: (element, event, elementData) => onCoveredClick(element, event, elementData)
+                perform: (element, event, elementData) => onCoveredClick(elementData.elementPosition)
             }
         ]
     },
@@ -106,7 +123,7 @@ const elementProperties = {
         eventListeners: [
             {
                 event: 'click',
-                perform: (element, event, elementData) => onCoveredClick(element, event, elementData)
+                perform: (element, event, elementData) => onCoveredClick(elementData.elementPosition)
             }
         ]
     },
@@ -115,7 +132,7 @@ const elementProperties = {
         eventListeners: [
             {
                 event: 'click',
-                perform: (element, event, elementData) => onCoveredClick(element, event, elementData)
+                perform: (element, event, elementData) => onCoveredClick(elementData.elementPosition)
             }
         ]
     },
@@ -124,7 +141,7 @@ const elementProperties = {
         eventListeners: [
             {
                 event: 'click',
-                perform: (element, event, elementData) => onCoveredClick(element, event, elementData)
+                perform: (element, event, elementData) => onCoveredClick(elementData.elementPosition)
             }
         ]
     },
@@ -133,7 +150,7 @@ const elementProperties = {
         eventListeners: [
             {
                 event: 'click',
-                perform: (element, event, elementData) => onCoveredClick(element, event, elementData)
+                perform: (element, event, elementData) => onCoveredClick(elementData.elementPosition)
             }
         ]
     },
@@ -142,7 +159,7 @@ const elementProperties = {
         eventListeners: [
             {
                 event: 'click',
-                perform: (element, event, elementData) => onCoveredClick(element, event, elementData)
+                perform: (element, event, elementData) => onCoveredClick(elementData.elementPosition)
             }
         ]
     },
@@ -151,12 +168,13 @@ const elementProperties = {
         eventListeners: [
             {
                 event: 'click',
-                perform: (element, event, elementData) => onCoveredClick(element, event, elementData)
+                perform: (element, event, elementData) => onCoveredClick(elementData.elementPosition)
             }
         ]
     },
     10: {
         class: 'covered',
+        content: 'l',
         eventListeners: [
             {
                 event: 'click',
