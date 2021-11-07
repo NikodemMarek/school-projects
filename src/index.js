@@ -1,7 +1,12 @@
 import drawBoard from './draw/drawBoard.js'
 import Board from './data/board.js'
 
-let gameStarted = false
+const GameState = Object.freeze({
+    START: 0,
+    GAME: 1,
+    END: 2
+})
+let gameState = GameState.START
 
 const boardContainer = document.getElementsByClassName('board')[0]
 const boardContainerSize = {
@@ -25,11 +30,10 @@ const elementProperties = {
             {
                 event: 'click',
                 perform: (element, event, elementData) => {
-                    if(gameStarted) {
+                    if(gameState == GameState.GAME) {
 
-                    }
-                    else {
-                        gameStarted = true
+                    } else if(gameState == GameState.START) {
+                        gameState = GameState.GAME
 
                         placeBombs(20, board,
                             {
