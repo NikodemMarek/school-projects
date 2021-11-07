@@ -23,6 +23,11 @@ const spaceAroundStart = {
     y: 1
 }
 
+const onCoveredClick = (element, event, elementData) => {
+        board.setValue(elementData.elementPosition, board.valueAt(elementData.elementPosition) + 12)
+        drawBoard(board)
+    }
+
 const elementProperties = {
     0: {
         class: 'covered',
@@ -60,7 +65,7 @@ const elementProperties = {
                                 { x: position.x + 1, y: position.y + 1 }
                             ].reduce((bombs, position) => board.isValue(position, 10)? bombs + 1: bombs, 0)
                     
-                            board.setValue(position, bombsAround == 0? 12: bombsAround)
+                            board.setValue(position, bombsAround == 0? 0: bombsAround)
                         }, 0)
                     
                         drawBoard(board)
@@ -70,44 +75,88 @@ const elementProperties = {
         ],
     },
     1: {
-        class: 'uncovered',
-        content: `<span style='color: blue;'>1</span>`
+        class: 'covered',
+        eventListeners: [
+            {
+                event: 'click',
+                perform: (element, event, elementData) => onCoveredClick(element, event, elementData)
+            }
+        ]
     },
     2: {
-        class: 'uncovered',
-        content: `<span style='color: green;'>2</span>`
+        class: 'covered',
+        eventListeners: [
+            {
+                event: 'click',
+                perform: (element, event, elementData) => onCoveredClick(element, event, elementData)
+            }
+        ]
     },
     3: {
-        class: 'uncovered',
-        content: `<span style='color: red;'>3</span>`
+        class: 'covered',
+        eventListeners: [
+            {
+                event: 'click',
+                perform: (element, event, elementData) => onCoveredClick(element, event, elementData)
+            }
+        ]
     },
     4: {
-        class: 'uncovered',
-        content: `<span style='color: darkblue;'>4</span>`
+        class: 'covered',
+        eventListeners: [
+            {
+                event: 'click',
+                perform: (element, event, elementData) => onCoveredClick(element, event, elementData)
+            }
+        ]
     },
     5: {
-        class: 'uncovered',
-        content: `<span style='color: darkred;'>5</span>`
+        class: 'covered',
+        eventListeners: [
+            {
+                event: 'click',
+                perform: (element, event, elementData) => onCoveredClick(element, event, elementData)
+            }
+        ]
     },
     6: {
-        class: 'uncovered',
-        content: `<span style='color: lightseagreen;'>6</span>`
+        class: 'covered',
+        eventListeners: [
+            {
+                event: 'click',
+                perform: (element, event, elementData) => onCoveredClick(element, event, elementData)
+            }
+        ]
     },
     7: {
-        class: 'uncovered',
-        content: `<span style='color: black;'>7</span>`
+        class: 'covered',
+        eventListeners: [
+            {
+                event: 'click',
+                perform: (element, event, elementData) => onCoveredClick(element, event, elementData)
+            }
+        ]
     },
     8: {
-        class: 'uncovered',
-        content: `<span style='color: gray;'>8</span>`
+        class: 'covered',
+        eventListeners: [
+            {
+                event: 'click',
+                perform: (element, event, elementData) => onCoveredClick(element, event, elementData)
+            }
+        ]
     },
     9: {
-        class: 'flag',
-        content: `<span style='color: tomato;'>|</span>`
+        class: 'covered',
+        eventListeners: [
+            {
+                event: 'click',
+                perform: (element, event, elementData) => onCoveredClick(element, event, elementData)
+            }
+        ]
     },
     10: {
-        class: 'bomb',
-        content: `<span style='color: black;'>o</span>`,
+        class: 'covered',
         eventListeners: [
             {
                 event: 'click',
@@ -119,8 +168,41 @@ const elementProperties = {
         class: 'bombExploded',
         content: `<span style='color: black;'>o</span>`
     },
+    // Uncovered elements.
     12: {
         class: 'uncovered'
+    },
+    13: {
+        class: 'uncovered',
+        content: `<span style='color: blue;'>1</span>`
+    },
+    14: {
+        class: 'uncovered',
+        content: `<span style='color: green;'>2</span>`
+    },
+    15: {
+        class: 'uncovered',
+        content: `<span style='color: red;'>3</span>`
+    },
+    16: {
+        class: 'uncovered',
+        content: `<span style='color: darkblue;'>4</span>`
+    },
+    17: {
+        class: 'uncovered',
+        content: `<span style='color: darkred;'>5</span>`
+    },
+    18: {
+        class: 'uncovered',
+        content: `<span style='color: lightseagreen;'>6</span>`
+    },
+    19: {
+        class: 'uncovered',
+        content: `<span style='color: black;'>7</span>`
+    },
+    20: {
+        class: 'uncovered',
+        content: `<span style='color: gray;'>8</span>`
     }
 }
 
